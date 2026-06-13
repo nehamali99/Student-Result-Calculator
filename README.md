@@ -14,15 +14,11 @@ A responsive web application that calculates a student's Total Marks, Percentage
 ✅ Pass/Fail Status Display
 ✅ Instant Results with JavaScript
 
----
-
 🛠️ Technologies Used
 
 - HTML5
 - CSS3
 - JavaScript
-
----
 
 📊 Grading System
 
@@ -32,8 +28,6 @@ Percentage| Grade
 60 – 74| C
 40 – 59| D
 Below 40| F
-
----
 
 🚀 How to Use
 
@@ -46,8 +40,6 @@ Below 40| F
    - Grade
    - Pass/Fail Status
 
----
-
 📂 Project Structure
 
 Student-Result-Calculator/
@@ -55,19 +47,15 @@ Student-Result-Calculator/
 ├── index.html
 └── README.md
 
----
-
 📸 Project Preview
 
 Enter marks for five subjects and instantly receive a detailed result summary including academic performance and grade evaluation.
 
----
+
 
 🤖 AI-Assisted Development
 
 This project was developed with the assistance of Claude AI for generating and improving the application code.
-
----
 
 🎯 Learning Outcomes
 
