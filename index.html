@@ -1,0 +1,308 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Result Calculator</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+}
+
+body{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+  background:linear-gradient(-45deg,#667eea,#764ba2,#00c9ff,#92fe9d);
+  background-size:400% 400%;
+  animation:gradientMove 12s ease infinite;
+}
+
+@keyframes gradientMove{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+.card{
+  width:100%;
+  max-width:500px;
+  padding:30px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(15px);
+  border:1px solid rgba(255,255,255,0.2);
+  box-shadow:0 15px 35px rgba(0,0,0,0.25);
+  color:white;
+}
+
+h2{
+  text-align:center;
+  margin-bottom:20px;
+  font-size:28px;
+}
+
+.form-group{
+  margin-bottom:15px;
+}
+
+label{
+  display:block;
+  margin-bottom:6px;
+  font-size:14px;
+  font-weight:500;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  outline:none;
+  font-size:15px;
+  transition:all 0.3s ease;
+}
+
+input:focus{
+  transform:scale(1.02);
+  box-shadow:0 0 12px rgba(255,255,255,0.7);
+}
+
+.error-field{
+  font-size:12px;
+  color:#ffd6d6;
+  margin-top:4px;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border:none;
+  border-radius:12px;
+  background:#00e676;
+  color:white;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:all 0.3s ease;
+}
+
+button:hover{
+  background:#00c853;
+  transform:translateY(-2px);
+}
+
+.general-error{
+  text-align:center;
+  color:#ffd6d6;
+  margin-top:10px;
+}
+
+.result{
+  display:none;
+  margin-top:20px;
+  padding:20px;
+  border-radius:15px;
+  background:white;
+  color:#333;
+}
+
+.result.show{
+  display:block;
+  animation:fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn{
+  from{
+    opacity:0;
+    transform:translateY(20px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.result p{
+  margin:10px 0;
+  font-size:16px;
+}
+
+.pass{
+  background:#28a745;
+  color:white;
+  padding:6px 12px;
+  border-radius:20px;
+  font-weight:bold;
+}
+
+.fail{
+  background:#dc3545;
+  color:white;
+  padding:6px 12px;
+  border-radius:20px;
+  font-weight:bold;
+}
+
+@media(max-width:600px){
+
+  .card{
+    padding:20px;
+  }
+
+  h2{
+    font-size:24px;
+  }
+
+  input,
+  button{
+    font-size:14px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>🎓 Student Result Calculator</h2>
+
+<div class="form-group">
+<label for="s1">Subject 1 Marks (0-100)</label>
+<input type="number" id="s1" min="0" max="100">
+<div class="error-field" id="e1"></div>
+</div>
+
+<div class="form-group">
+<label for="s2">Subject 2 Marks (0-100)</label>
+<input type="number" id="s2" min="0" max="100">
+<div class="error-field" id="e2"></div>
+</div>
+
+<div class="form-group">
+<label for="s3">Subject 3 Marks (0-100)</label>
+<input type="number" id="s3" min="0" max="100">
+<div class="error-field" id="e3"></div>
+</div>
+
+<div class="form-group">
+<label for="s4">Subject 4 Marks (0-100)</label>
+<input type="number" id="s4" min="0" max="100">
+<div class="error-field" id="e4"></div>
+</div>
+
+<div class="form-group">
+<label for="s5">Subject 5 Marks (0-100)</label>
+<input type="number" id="s5" min="0" max="100">
+<div class="error-field" id="e5"></div>
+</div>
+
+<button onclick="calculateResult()">Calculate Result</button>
+
+<div class="general-error" id="generalError"></div>
+
+<div class="result" id="resultBox">
+<p><strong>Total Marks:</strong> <span id="totalMarks"></span> / 500</p>
+<p><strong>Percentage:</strong> <span id="percentage"></span>%</p>
+<p><strong>Grade:</strong> <span id="grade"></span></p>
+<p><strong>Status:</strong> <span id="status"></span></p>
+</div>
+
+</div>
+
+<script>
+
+function calculateResult(){
+
+  const ids=['s1','s2','s3','s4','s5'];
+
+  let marks=[];
+  let valid=true;
+
+  document.getElementById("generalError").textContent="";
+  document.getElementById("resultBox").classList.remove("show");
+
+  for(let i=1;i<=5;i++){
+    document.getElementById("e"+i).textContent="";
+  }
+
+  ids.forEach((id,index)=>{
+
+    let value=document.getElementById(id).value.trim();
+
+    if(value===""){
+      document.getElementById("e"+(index+1)).textContent=
+      "Please enter marks";
+      valid=false;
+      return;
+    }
+
+    let mark=Number(value);
+
+    if(isNaN(mark) || mark<0 || mark>100){
+      document.getElementById("e"+(index+1)).textContent=
+      "Marks must be between 0 and 100";
+      valid=false;
+      return;
+    }
+
+    marks.push(mark);
+  });
+
+  if(!valid){
+    document.getElementById("generalError").textContent=
+    "Please fix the highlighted errors.";
+    return;
+  }
+
+  let total=marks.reduce((sum,m)=>sum+m,0);
+
+  let percentage=(total/500)*100;
+
+  let grade;
+
+  if(percentage>=90)
+    grade="A";
+  else if(percentage>=80)
+    grade="B";
+  else if(percentage>=70)
+    grade="C";
+  else if(percentage>=60)
+    grade="D";
+  else
+    grade="F";
+
+  let fail=marks.some(mark=>mark<35);
+
+  document.getElementById("totalMarks").textContent=total;
+  document.getElementById("percentage").textContent=percentage.toFixed(2);
+  document.getElementById("grade").textContent=grade;
+
+  const status=document.getElementById("status");
+
+  if(fail){
+    status.textContent="FAIL";
+    status.className="fail";
+  }
+  else{
+    status.textContent="PASS";
+    status.className="pass";
+  }
+
+  document.getElementById("resultBox").classList.add("show");
+}
+
+</script>
+
+</body>
+</html>
+```
